@@ -24,17 +24,41 @@ ipfs.on('ready', async () => {
     // Give write access to everyone
     write: ['*'],
   }
-  const db = await orbitdb.keyvalue('main-database', access)
+  // const db = await orbitdb.keyvalue('default-db', access)
+  const db = await orbitdb.open('best3-db', {
+    // If database doesn't exist, create it
+    create: true, 
+    overwrite: true,
+    // Load only the local version of the database, 
+    // don't load the latest from the network yet
+    localOnly: false,
+    type: 'keyvalue',
+    // If "Public" flag is set, allow anyone to write to the database,
+    // otherwise only the creator of the database can write
+    write: ['*'],
+  })
   console.log(db.address.toString())
   console.log('check before await')
   await db.load()
   console.log('after dbload')
-  await db.put('name1', 'hello1')
+  // await db.put('name1', 'hello1')
   console.log('after db put')
   const value = db.get('name2')
   const value1 = db.get('name1')
   console.log('regular console')
   console.log('print', value, value1)
+
+  //replicating
+  db.events.on('replicated', () => {
+    // const result = db.iterator({ limit: -1 }).collect().map(e => e.payload.value)
+    console.log(db.get('name2'))
+  })
+  // Start adding entries to the first database
+  // setInterval(async () => {
+  //   console.log('adding val')
+  //   await db.put('myval',{ time: new Date().getTime() })
+  //   console.log('after value')
+  // }, 10000)
   // const db = await orbitdb.log('database init')
   //==========================================
   // Create / Open a database
@@ -88,4 +112,8 @@ function repo () {
 
 function logme (data) {
   console.log(data);
+}
+
+var randomFixedInteger = function (length) {
+  return Math.floor(Math.pow(10, length-1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length-1) - 1));
 }
