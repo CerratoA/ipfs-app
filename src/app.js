@@ -26,10 +26,14 @@ ipfs.on('ready', async () => {
   }
   const db = await orbitdb.keyvalue('main-database', access)
   console.log(db.address.toString())
+  console.log('check before await')
   await db.load()
+  console.log('after dbload')
   await db.put('name1', 'hello1')
+  console.log('after db put')
   const value = db.get('name2')
   const value1 = db.get('name1')
+  console.log('regular console')
   console.log('print', value, value1)
   // const db = await orbitdb.log('database init')
   //==========================================
