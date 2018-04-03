@@ -24,7 +24,7 @@ ipfs.on('ready', async () => {
     // Give write access to everyone
     write: ['*'],
   }
-  const db = await orbitdb.keyvalue('/orbitdb/Qmf81pC1dgNcFyZhhN8M9ZAygdWrzJfqazKN2WUh4fB248/second-database')
+  const db = await orbitdb.keyvalue('main-database', access)
   console.log(db.address.toString())
   await db.load()
   await db.put('name1', 'hello1')
